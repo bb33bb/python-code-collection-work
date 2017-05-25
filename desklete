@@ -1,4 +1,5 @@
 desklet入门教程
+(本文翻译与互联网)
 2014-11-31-Wed
 作为Cinnamon桌面环境中首批开发deskletes作品之一，帮助Cinnamon开发的时候，就蹦出了这个教程的火花，
 这方面的开发很少，文档搜索起来也困难。唯一被告知的建议是：去看别人的源代码吧！！
@@ -108,18 +109,10 @@ function main(metadata, desklet_id) {
 
 引入一个新的库，这次的库St或者Shell Toolkit来自于GNOME，
 
-We now import a new library, this time St or Shell Toolkit library from GNOME. 
-I have found this documentation to be helpful 
-in finding what classes are available in JavaScript over the GNOME's official C API reference.
-Next, a new method to HelloDesklet has been added which sets up our little window on the desktop 
-and displays the text "Hello, world!". 
+发现这个文档有点用处，尤其是需要考虑javascript在GNOME官方c api参考手册中有哪些类的时候。（有点乱了）
+I have found this documentation to be helpful in finding what classes are available in JavaScript over the GNOME's official C API reference.
 
-We use a StBin container that can contain a single child, 
-which is a StLabel widget with the text "Hello, world!". 
+然后，一个给我们桌面添加小窗口的方法，窗口显示内容：Helloworld！
 
-Finally we add the label to the window with the add_actor method 
-and then set the desklet content with setContent method inherited from the Desklet base class.
-That is it! We have finished the basis of a simple desklet for Cinnamon. 
-It should look something like what you see below (the style might be different depending on your Cinnamon theme).
-
-Hello, World!
+使用StBin容器，包含一个子节点，该节点作为StLable widget来现实helloworld
+最后，add_actor方法把该标签添加到窗口，setContent方法继承自Desklet base class并用来设置desklet内容
