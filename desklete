@@ -1,32 +1,38 @@
-Tutorial: Hello, world! Cinnamon desklet
-Wed 31 December 2014 - JavaScriptCinnamondesklettutorial
-This is the first of hopefully several tutorials on developing desklets for the Cinnamon desktop environment. In this tutorial, I will cover the basics of creating a desklet and do my best to link or refer to additional resources where you might find more information on the topics. Cinnamon is a linux desktop environment forked from Gnome Shell by Linux Mint. A desklet is a small application which appears on the Cinnamon desktop, Cinnamon ships with three desklets and more can be found here. Desklets are written in JavaScript and uses CJS which is based on Gjs. Gjs are JavaScript bindings for GNOME and is based on Mozilla's JavaScript engine Spidermonkey.
+desklet入门教程
+2014-11-31-Wed
+作为Cinnamon桌面环境中首批开发deskletes作品之一，帮助Cinnamon开发的时候，就蹦出了这个教程的火花，
+这方面的开发很少，文档搜索起来也困难。唯一被告知的建议是：去看别人的源代码吧！！
+这个学习方法确实有点难，因为除了代码的形式外，作者一般不会明确提供特别多的信息。而本文，也就应运而生。
 
-My reason for creating this tutorial came about when I was creating a desklet for Cinnamon. There were barely any guides or tutorials on creating a desklet and finding documentation on the libraries available in CJS was difficult. The only advice I saw was to read other people's source code and learn from that, while it is a great way to learn, it does not provide enough information. So I would like to share what I have learned and where I found it.
+作为我们的第一个desklet教程，当然非hello world莫属！一个简单的展示“helloworld”的程序。
 
-Our first desklet will be a simple "Hello, World!" program, a simple program which displays the text "Hello, World!" on the desktop using GNOME Shell's Clutter-based toolkit called St (Shell Toolkit). The St library provides an easy way to create simple user interfaces.
+工作前提：
+文本编辑器（不论何种，您喜欢即可）
+首先设置desklete安装目录，desklete默认安装在
+~/.local/share/cinnamon/desklets
+我们就从这里起步开始
 
-Requirements
+首先要拥有一个id或者，格式为"desklet-name@name"，然后用该id去创建目录，我们在该目录下展开工作
+这里，我用的UUID为"hello-world@orangeshark".
 
-Cinnamon (I am running Linux Mint 17.1 with version 2.4.5)
-Your favorite text editor
-Set up
-
-Let's start by setting up the directory for our desklet. Desklets are stored in the user's home directory ~/.local/share/cinnamon/desklets, this is where we will work on our desklet. First, we need to create the directory of our desklet with a unique ID or UUID in the following format "desklet-name@name", where desklet-name is the desklet's name, in this case hello-world, and name is either your name or your domain name. I will use the UUID "hello-world@orangeshark".
-
+如下操作：
 mkdir -p ~/.local/share/cinnamon/desklets/hello-world@orangeshark
 cd ~/.local/share/cinnamon/desklets/hello-world@orangeshark
-Now we need to create the structure for our project. A desklet has the following structure:
+
+项目结构如下：
 
 hello-world@orangeshark/
 ├── desklet.js
 └── metadata.json
-The desklet.js file is where the majority of our JavaScript code will be located. metadata.json contains, of course, the metadata for the desklet, including the UUID and name of the desklet.
 
+The desklet.js文件大部分是Javascript代码，
+metadata.json包含的是desklet的metadata,包括UUID和desklet的名字.
+建立文件
 touch desklet.js metadata.json
-Time to code
 
+好了，开始搞起代码
 Lets first define the metadata for the desklet, open up metadata.json and add the following json.
+首先定义metadata，修改metadata.json然后加入如下代码
 
 {
     "uuid": "hello-world@orangeshark",
@@ -34,9 +40,20 @@ Lets first define the metadata for the desklet, open up metadata.json and add th
     "description": "Displays Hello, World!",
     "prevent-decorations": false
 }
-The metadata contains basic information about your desklet, including the UUID we discussed earlier. The only special property is "prevent-decorations" which tells Cinnamon whether to apply your desktop's theme or prevent it from inheriting it. For this simple example, we will put the value false so the desklet looks like the rest of your desktop.
 
-Now for the JavaScript. There are several coding style guides to follow for JavaScript by the GNOME project, Cinnamon seems to follow this guide. If you are used to using JavaScript on the web or in node.js, you might notice a couple of differences in the language. Several of these features are from Mozilla's version of JavaScript with some being defined in future versions of ECMAScript. I will provide links where you can find additional information on those features as we encounter them.
+废话继续，metadata包含的是desklete的基本信息，唯一需要说明的是"prevent-decorations"，
+这个属性用来控制是否引入桌面主题，进而继承桌面主题的一些属性特征
+
+本例中，我们设置为false
+
+然后开始javascript代码，
+
+GNOME项目中，我们可以进行多种style的代码，Cinnamon好像走的是如下的路线：
+如果你使用的javascript来自网络，那么我们可能注意到一点点语言上的不同
+除了要遵循ECMAScript外，他们看起来与火狐版本的javascript有着一定的渊源。
+后面我会提供一点附加信息的链接。
+
+继续代码：
 
 const Desklet = imports.ui.desklet;
 
@@ -55,7 +72,8 @@ HelloDesklet.prototype = {
 function main(metadata, desklet_id) {
     return new HelloDesklet(metadata, desklet_id);
 }
-The above code is all you need to create a minimal desklet. You can use it as the basic template to start your own desklet. Now for an explanation of each part! The first line contains const, one of those new features I mentioned earlier, more info here. The const declaration creates a constant in the current scope, in this case the global scope, with a value that cannot be changed through re-assignment. We use it here to import the desklet module from Cinnamon. The next function is our Desklet object's constructor, following GNOME's style guide for creating "classes". Using GNOME's class pattern, we assign to the prototype of HelloDesklet an object containing the methods and properties for our HelloDesklet class. The first property "__proto__" is a special one, it allows us to modify the prototype chain, allowing us to have a sort of inheritance of classes. So if a property is not found in the current instance, it will walk the prototype chain to the next prototype, in this case Desklet's prototype, and check if the property is there. So our desklet must "inherit" from Cinnamon's Desklet class, Desklet contains a lot of code required by Cinnamon to set up and destroy a desklet. The _init function is the actual constructor for our "class" and our first task is to call the Desklet's constructor, passing the current instance using "this". Finally the main function is the entry point to our desklet and we just return an instance of our desklet.
+
+以上是创建一个迷你版desklet所需要的所有的代码，我们可以拿来作为模板逐渐扩展到我们自己的项目中去。
 
 const Desklet = imports.ui.desklet;
 const St = imports.gi.St;
@@ -87,8 +105,21 @@ HelloDesklet.prototype = {
 function main(metadata, desklet_id) {
     return new HelloDesklet(metadata, desklet_id);
 }
-We now import a new library, this time St or Shell Toolkit library from GNOME. I have found this documentation to be helpful in finding what classes are available in JavaScript over the GNOME's official C API reference. Next, a new method to HelloDesklet has been added which sets up our little window on the desktop and displays the text "Hello, world!". We use a StBin container that can contain a single child, which is a StLabel widget with the text "Hello, world!". Finally we add the label to the window with the add_actor method and then set the desklet content with setContent method inherited from the Desklet base class. That is it! We have finished the basis of a simple desklet for Cinnamon. It should look something like what you see below (the style might be different depending on your Cinnamon theme).
+
+引入一个新的库，这次的库St或者Shell Toolkit来自于GNOME，
+
+We now import a new library, this time St or Shell Toolkit library from GNOME. 
+I have found this documentation to be helpful 
+in finding what classes are available in JavaScript over the GNOME's official C API reference.
+Next, a new method to HelloDesklet has been added which sets up our little window on the desktop 
+and displays the text "Hello, world!". 
+
+We use a StBin container that can contain a single child, 
+which is a StLabel widget with the text "Hello, world!". 
+
+Finally we add the label to the window with the add_actor method 
+and then set the desklet content with setContent method inherited from the Desklet base class.
+That is it! We have finished the basis of a simple desklet for Cinnamon. 
+It should look something like what you see below (the style might be different depending on your Cinnamon theme).
 
 Hello, World!
-
-This concludes the tutorial for Cinnamon desklets. I plan on covering more aspects on creating Cinnamon desklets in the future, so stay tuned!
