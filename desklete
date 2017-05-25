@@ -116,3 +116,5 @@ I have found this documentation to be helpful in finding what classes are availa
 
 使用StBin容器，包含一个子节点，该节点作为StLable widget来现实helloworld
 最后，add_actor方法把该标签添加到窗口，setContent方法继承自Desklet base class并用来设置desklet内容
+
+一切就绪，然打开设置，去把该desklete添加到桌面即可！！
